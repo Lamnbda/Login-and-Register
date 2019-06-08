@@ -43,11 +43,37 @@ app.get("/register", function (req, res) {
 });
 
 //The user submits a registration including their email and password
+app.post("/register", function(req,res){
+    let newUser = new User({
+        email: req.body.username,
+        password: req.body.password
+    });
 
+    newUser.save(function(err){
+        if(err){
+            console.log(err);
+        } else {
+            res.render("secrets");
+        }
+    });
+});
 
+app.post("/login", function(req,res){
+    const username = req.body.username;
+    const password = req.body.password; 
 
-
-
+    User.findOne({email: username},function(err, foundUsername){
+        if(err){
+            console.log(err);
+        } else {
+            if(foundUsername){ //This checks if there is a username actually found. 
+                if(foundUsername.password === password){
+                    res.render("secrets");
+                }
+            }
+        }
+    });
+});
 
 app.listen(3000, function () {
     console.log("The server is now online");
